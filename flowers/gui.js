@@ -1,5 +1,8 @@
 function createGUI(obj, i) {
   let subFolder = gui.addFolder(`obj ${i}`);
+  let hairFolder = subFolder.addFolder("the hair");
+  let faceFolder = subFolder.addFolder("the face");
+
   let hairTopSlider, hairBottomSlider;
 
   // let radiusSlider = createSlider(
@@ -21,9 +24,6 @@ function createGUI(obj, i) {
     1,
     "# sides"
   );
-
-  let hairFolder = subFolder.addFolder("the hair");
-  let faceFolder = subFolder.addFolder(`the face`);
 
   // Hair Folder
   if (obj.hairType === "buns") {
@@ -145,65 +145,7 @@ function createGUI(obj, i) {
   }
 
   // Face Folder
-
-  let eyeFolder = faceFolder.addFolder("eyes");
-
-  for (let eachSlider in obj.faceVals.eyes) {
-    console.log(obj.faceVals.eyes, eachSlider);
-    createSlider(
-      eyeFolder,
-      obj.faceVals.eyes,
-      `${eachSlider}`,
-      -50,
-      50,
-      1,
-      `${eachSlider}`
-    );
-  }
-
-  let cheeksFolder = faceFolder.addFolder("cheeks");
-  for (let eachSlider in obj.faceVals.cheeks) {
-    console.log(obj.faceVals.cheeks, eachSlider);
-    createSlider(
-      cheeksFolder,
-      obj.faceVals.cheeks,
-      `${eachSlider}`,
-      0,
-      50,
-      1,
-      `${eachSlider}`
-    );
-  }
-
-  let noseFolder = faceFolder.addFolder("nose");
-  for (let eachSlider in obj.faceVals.nose) {
-    console.log(obj.faceVals.nose, eachSlider);
-    createSlider(
-      noseFolder,
-      obj.faceVals.nose,
-      `${eachSlider}`,
-      -50,
-      50,
-      1,
-      `${eachSlider}`
-    );
-  }
-
-  let mouthFolder = faceFolder.addFolder("mouth");
-  for (let eachSlider in obj.faceVals.mouth) {
-    console.log(obj.faceVals.mouth, eachSlider);
-    createSlider(
-      mouthFolder,
-      obj.faceVals.mouth,
-      `${eachSlider}`,
-      -50,
-      50,
-      1,
-      `${eachSlider}`
-    );
-  }
-
-  /////////////////
+  faceFolder.addFolder("eyes");
 
   function createSlider(subFolder, obj, param, min, max, step, name) {
     if (!step) {

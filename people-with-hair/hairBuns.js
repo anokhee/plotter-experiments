@@ -44,7 +44,14 @@ function createHairBuns(obj, headArr, hairlineArr, hairVals, hairline) {
 
     function renderArcPoints(arcPoints, centerX, centerY) {
       for (let i = 0; i < arcPoints.length; i++) {
-        let offset = hairVals.texture.amount * 0.085;
+        let offset;
+
+        if (hairVals.texture.amount != 0) {
+          offset = Math.floor(hairVals.texture.amount * 0.05);
+        } else {
+          offset = 0;
+        }
+
         if (i % 2 == 0) {
           offset = -offset;
         }

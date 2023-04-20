@@ -1,3 +1,12 @@
+let seedMin = 50;
+let seedMax = 50;
+let seedRadius = 100;
+let spacing = seedRadius * 3;
+
+let seedArr = [];
+let rows = 1;
+let cols = 1;
+
 function interpolateArc(
   centerX,
   centerY,
@@ -39,15 +48,6 @@ function lerpBezier(points, t) {
   return lerpBezier(newPoints, t);
 }
 
-let seedMin = 22;
-let seedMax = 22;
-let seedRadius = 24;
-let spacing = seedRadius * 5;
-
-let seedArr = [];
-let rows = 5;
-let cols = 5;
-
 function populateSeeds() {
   seedArr = [];
   let seed = Math.random() * (seedMax - seedMin) + seedMin;
@@ -65,3 +65,29 @@ function populateSeeds() {
 }
 
 populateSeeds();
+
+function star(x, y, radius1, radius2, npoints) {
+  var angle = TWO_PI / npoints;
+  var halfAngle = angle / 2.0;
+  beginShape();
+  for (var a = 0; a < TWO_PI; a += angle) {
+    var sx = x + cos(a) * radius2;
+    var sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a + halfAngle) * radius1;
+    sy = y + sin(a + halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+
+function polygon(x, y, radius, npoints) {
+  let angle = TWO_PI / npoints;
+  beginShape();
+  for (let a = 0; a < TWO_PI; a += angle) {
+    let sx = x + cos(a) * radius;
+    let sy = y + sin(a) * radius;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}

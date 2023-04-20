@@ -17,34 +17,31 @@ function createWavyFringe(hairlineArr, hairline, hairVals) {
   }
 }
 
-function createLineFringe(headArr, hairlineArr, hairline, hairVals) {
+function createLineFringe(hairVals, headArr, hairlineArr) {
   if (hairVals.fringe.length != 0) {
-    for (let i = 0; i < hairlineArr.length; i++) {
-      if (i < hairlineArr.length / 2 - 1) {
-        bezier(
-          headArr[0].x,
-          headArr[0].y,
-          headArr[0].x - hairVals.fringe.curve.x1,
-          headArr[0].y - hairVals.fringe.curve.y1,
-          hairlineArr[i].x - hairVals.fringe.curve.x2,
-          hairlineArr[i].y + hairVals.fringe.curve.y1,
-          hairlineArr[i].x,
-          hairlineArr[i].y
-        );
-      } else if (i > hairlineArr.length / 2 - 1) {
-        bezier(
-          headArr[0].x,
-          headArr[0].y,
-          headArr[0].x + hairVals.fringe.curve.x1,
-          headArr[0].y - hairVals.fringe.curve.y1,
-          hairlineArr[i].x + hairVals.fringe.curve.x2,
-          hairlineArr[i].y + hairVals.fringe.curve.y1,
-          hairlineArr[i].x,
-          hairlineArr[i].y
-        );
-      } else {
-        // calculate midpoint
-      }
+    for (let i = hairlineArr.length * 0.5 - 1; i > 0; i--) {
+      bezier(
+        headArr[0].x,
+        headArr[0].y,
+        headArr[0].x - hairVals.fringe.curve.x1,
+        headArr[0].y + hairVals.fringe.curve.y1,
+        hairlineArr[i].x - hairVals.fringe.curve.x2,
+        hairlineArr[i].y + hairVals.fringe.curve.y2,
+        hairlineArr[i].x,
+        hairlineArr[i].y
+      );
+    }
+    for (let i = hairlineArr.length * 0.5; i < hairlineArr.length - 1; i++) {
+      bezier(
+        headArr[0].x,
+        headArr[0].y,
+        headArr[0].x + hairVals.fringe.curve.x1,
+        headArr[0].y + hairVals.fringe.curve.y1,
+        hairlineArr[i].x + hairVals.fringe.curve.x2,
+        hairlineArr[i].y + hairVals.fringe.curve.y2,
+        hairlineArr[i].x,
+        hairlineArr[i].y
+      );
     }
   }
 }

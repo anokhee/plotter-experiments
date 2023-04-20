@@ -2,17 +2,15 @@ let gui = new dat.GUI();
 let faceArr = [];
 let face;
 
-console.log(seedArr);
-
 function setup() {
   let guiFolderCount = 0;
   createCanvas(windowWidth, windowHeight, SVG);
-  for (let i = 0; i < rows; i++) {
-    for (let j = cols; j > 0; j--) {
+  for (let i = 0; i < cols; i++) {
+    for (let j = rows; j > 0; j--) {
       guiFolderCount++;
       let f = new Face(
-        spacing * 0.5 + spacing * i,
-        spacing * 0.75 * j,
+        spacing + spacing * i,
+        spacing * j,
         28,
         seedRadius,
         seedArr[i * j]
@@ -45,7 +43,7 @@ class Face {
     this.x = x;
     this.y = y;
 
-    this.hairTypeArr = ["buns", "lines"];
+    this.hairTypeArr = ["buns", "buns", "lines", "lines", "lines"];
     this.sides = sides;
     this.radius = radius;
     this.seed = seed;
@@ -59,10 +57,10 @@ class Face {
 
     if (this.hairType === "lines") {
       hairTopPoint = 0;
-      hairBottomPoint = Math.floor(random(this.sides * 0.4, this.sides * 0.9));
+      hairBottomPoint = Math.floor(random(this.sides * 0.1, this.sides * 0.65));
     } else if (this.hairType === "buns") {
       hairTopPoint = Math.floor(random(0, this.sides * 0.25));
-      hairBottomPoint = Math.floor(random(1, this.sides * 0.45 - hairTopPoint));
+      hairBottomPoint = Math.floor(random(1, this.sides * 0.7 - hairTopPoint));
     }
 
     this.hairVals = {
@@ -78,10 +76,10 @@ class Face {
         bottom: hairTopPoint + hairBottomPoint,
       },
       fringe: {
-        length: 4,
+        length: 0,
         waveFrequency: 0.08,
         waveAmplitude: 5,
-        curve: { x1: this.radius * 0.5, y1: 10, x2: this.radius * 0.25, y2: 0 },
+        curve: { x1: this.radius * 0.5, y1: 1, x2: this.radius * 0.5, y2: 2 },
       },
       texture: {
         amount: 20,
@@ -91,50 +89,128 @@ class Face {
       },
     };
 
-    this.faceVals = {
-      eyeShape: {},
-    };
-
     this.headArr = [];
     this.hairLineArr = [];
+
+    this.faceVals = {
+      eyes: {
+        xPos: this.radius / 2,
+        yPos: 10,
+        width: this.radius * 0.4,
+        height: this.radius * 0.4,
+        pupilRadius: 5,
+        canthalTilt: -2,
+        innerCornerTilt: 1,
+        lidTop: -5,
+        waterline: 0,
+      },
+      cheeks: {
+        xPos: this.radius * 0.1,
+        yPos: this.radius * 0.2,
+        inner: Math.floor(this.radius * 0.17),
+        outer: Math.floor(this.radius * 0.14),
+        sides: 8,
+      },
+      nose: {
+        xPos: 6,
+        yPos: 2,
+        xOff: 4,
+        yOff: 5,
+      },
+      mouth: {
+        xPos: 6,
+        yPos: 2,
+        yOff: 5,
+      },
+    };
   }
 
   randomizeVals() {
     let seedVal = this.seedVal;
     this.sides = seedVal;
-    this.hairVals.density = random(10, 20);
+    this.hairVals.density = random(15, 20);
 
     if (this.hairType === "lines") {
       this.hairVals.position.top = 0;
       this.hairVals.position.bottom = Math.floor(
-        random(Math.floor(this.sides * 0.2), Math.floor(this.sides * 0.8))
+        random(Math.floor(this.sides * 0.1), Math.floor(this.sides * 0.6))
       );
 
-      this.hairVals.fringe.length = Math.floor(random(3, this.sides * 0.3));
+      this.hairVals.fringe.length = Math.floor(
+        random(this.sides * 0.1, this.sides * 0.2)
+      );
+      this.hairVals.fringe.waveAmplitude = random(-5, 5);
 
-      let shapex1 = random(-spacing * 0.8, 0);
+      let shapex1 = random(-spacing * 0.5, 0);
       this.hairVals.shape.x1 = shapex1;
-      this.hairVals.shape.y1 = random(-shapex1, shapex1);
-      this.hairVals.shape.x1 = random(shapex1, shapex1);
-      this.hairVals.shape.y2 = random(-shapex1, shapex1);
+      this.hairVals.shape.y1 = random(-shapex1 * 2, shapex1 * 2);
+      this.hairVals.shape.x1 = random(shapex1 * 0.5, shapex1 * 2);
+      this.hairVals.shape.y2 = random(-shapex1 * 2, shapex1 * 2);
       this.hairVals.texture.amount = random(
         -this.sides * 0.15,
         this.sides * 0.15
       );
 
-      let fringex1 = random(0, this.radius);
+      let fringex1 = random(0, this.radius * 0.25);
       this.hairVals.fringe.curve.x1 = fringex1;
       this.hairVals.fringe.curve.y1 = random(-fringex1, fringex1);
-      this.hairVals.fringe.curve.x2 = random(0, fringex1);
+      this.hairVals.fringe.curve.x2 = random(0, fringex1 * 1.25);
       this.hairVals.fringe.curve.y2 = random(-fringex1, fringex1);
 
-      this.hairVals.texture.amount = random(-100, 100);
+      this.hairVals.texture.amount = random(-120, 0);
     }
 
     if (this.hairType === "buns") {
       this.hairVals.texture.amount = Math.floor(random(4, this.sides * 0.75));
       this.hairVals.fringe.length = Math.floor(random(2, this.sides * 0.3));
     }
+
+    this.faceVals.eyes.width = random(this.radius * 0.3, this.radius * 0.5);
+    this.faceVals.eyes.height = random(this.radius * 0.05, this.radius * 0.3);
+
+    this.faceVals.eyes.xPos = random(
+      this.radius - this.faceVals.eyes.width,
+      this.radius * 0.3
+    );
+    this.faceVals.eyes.yPos = random(this.radius * 0.2, this.radius * 0.5);
+    this.faceVals.eyes.pupilRadius = random(
+      this.faceVals.eyes.height * 0.1,
+      this.faceVals.eyes.height * 0.6
+    );
+    this.faceVals.eyes.canthalTilt = random(
+      -this.faceVals.eyes.height * 0.5,
+      this.faceVals.eyes.height * 0.5
+    );
+    this.faceVals.eyes.innerCornerTilt = random(
+      -this.faceVals.eyes.height * 0.5,
+      this.faceVals.eyes.height * 0.5
+    );
+
+    let cheekSize = random(this.radius * 0.1, this.radius * 0.2);
+
+    this.faceVals.cheeks.yPos = random(
+      this.faceVals.eyes.height + cheekSize * 0.5,
+      this.faceVals.eyes.height + cheekSize
+    );
+
+    this.faceVals.cheeks.inner = random(cheekSize * 0.5, cheekSize);
+    this.faceVals.cheeks.outer = random(this.faceVals.cheeks.inner, cheekSize);
+
+    this.faceVals.cheeks.xPos = random(
+      this.radius * 0.5,
+      this.radius - cheekSize
+    );
+    this.faceVals.cheeks.sides = Math.floor(random(3, 10));
+
+    this.faceVals.nose.yPos = Math.floor(random(3, 10));
+    this.faceVals.nose.xOff = Math.floor(random(-5, 5));
+    this.faceVals.nose.yOff = Math.floor(random(0, 8));
+
+    this.faceVals.mouth.xPos = Math.floor(random(3, 5));
+    this.faceVals.mouth.yPos = Math.floor(random(0, 4));
+    this.faceVals.mouth.yOff = Math.floor(random(-2, 2));
+
+    console.log(this.radius, this.faceVals.eyes.yPos);
   }
 
   clearArrays() {
@@ -187,20 +263,117 @@ class Face {
     if (this.hairType === "lines") {
       if (this.hairVals.fringe.length != 0) {
         createLineFringe(
+          this.hairVals,
           this.headArr,
           this.hairLineArr,
-          hairline,
-          this.hairVals
+          hairline
         );
       }
       createLineHair(this, this.headArr, this.hairlineArr, hairline);
     }
   }
 
+  face() {
+    let flip = 1;
+    let eyeVals = this.faceVals.eyes;
+    let cheekVals = this.faceVals.cheeks;
+    let mouthVals = this.faceVals.mouth;
+    let noseVals = this.faceVals.nose;
+    let yPosTop;
+
+    if (this.hairVals.fringe.length != 0) {
+      yPosTop = this.headArr[this.hairVals.fringe.length].y + eyeVals.yPos;
+    } else {
+      yPosTop = this.y + this.radius * 0.25;
+    }
+
+    for (let i = 0; i <= 1; i++) {
+      if (i === 1) {
+        flip *= -1;
+      }
+
+      // Eyes
+
+      fill(0);
+      ellipse(
+        this.x - eyeVals.xPos * flip,
+        yPosTop,
+        eyeVals.pupilRadius,
+        eyeVals.pupilRadius
+      );
+      noFill();
+      bezier(
+        this.x + eyeVals.xPos * flip - eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.innerCornerTilt,
+        this.x + eyeVals.xPos * flip - eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.lidTop,
+        this.x + eyeVals.xPos * flip + eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.lidTop,
+        this.x + eyeVals.xPos * flip + eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.canthalTilt
+      );
+
+      bezier(
+        this.x + eyeVals.xPos * flip - eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.innerCornerTilt,
+        this.x + eyeVals.xPos * flip - eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.height + eyeVals.waterline,
+        this.x + eyeVals.xPos * flip + eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.height + eyeVals.waterline,
+        this.x + eyeVals.xPos * flip + eyeVals.width * 0.5 * flip,
+        yPosTop + eyeVals.canthalTilt
+      );
+
+      // Cheeks
+      star(
+        this.x - cheekVals.xPos * flip,
+        yPosTop + eyeVals.waterline + cheekVals.yPos,
+        cheekVals.inner,
+        cheekVals.outer,
+        cheekVals.sides
+      );
+    }
+
+    // Nose
+    bezier(
+      this.x,
+      yPosTop + noseVals.yPos,
+      this.x + noseVals.xOff,
+      yPosTop + noseVals.yPos,
+      this.x + noseVals.xOff,
+      yPosTop + noseVals.yPos + noseVals.yOff,
+      this.x,
+      yPosTop + noseVals.yPos + noseVals.yOff
+    );
+
+    // Mouth
+    bezier(
+      this.x - mouthVals.xPos,
+      yPosTop + eyeVals.yPos + noseVals.yPos + noseVals.yOff + mouthVals.yPos,
+      this.x - mouthVals.xPos,
+      yPosTop +
+        eyeVals.yPos +
+        noseVals.yPos +
+        noseVals.yOff +
+        mouthVals.yPos +
+        mouthVals.yOff,
+      this.x + mouthVals.xPos,
+      yPosTop +
+        eyeVals.yPos +
+        noseVals.yPos +
+        noseVals.yOff +
+        mouthVals.yPos +
+        mouthVals.yOff,
+      this.x + mouthVals.xPos,
+      yPosTop + eyeVals.yPos + noseVals.yPos + noseVals.yOff + mouthVals.yPos
+    );
+  }
+
   draw() {
     this.clearArrays();
     this.headShape();
     this.hair();
+    this.face();
     noFill();
   }
 }
@@ -208,7 +381,7 @@ class Face {
 function makePolygon(xStart, yStart, numSides, r, arr, show) {
   let angle, step;
   angle = 0;
-  step = TWO_PI / numSides;
+  step = (TWO_PI * 1) / numSides;
   beginShape();
   for (let i = 0; i <= numSides; i++) {
     let x = r * sin(angle);
